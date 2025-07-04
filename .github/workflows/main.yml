@@ -1,0 +1,40 @@
+name: Run Shared Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      ai_instructions:
+        description: 'Instructions for AI'
+        required: true
+        type: string
+      target_branch:
+        description: 'Branch to checkout'
+        required: true
+        default: 'main'
+      slug:
+        description: 'Chat slug'
+        required: true
+      chat_id:
+        description: 'Chat id'
+        required: true
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: read
+  id-token: write
+
+run-name: ${{ inputs.ai_instructions }}
+
+jobs:
+  use-shared:
+    uses: Git-Assist/shared-action-repo/.github/workflows/main.yml@main
+    with:
+      ai_instructions: ${{ inputs.ai_instructions }}
+      project_id: ${{ vars.PROJECT_ID }}
+      target_branch: ${{ inputs.target_branch }}
+      slug: ${{ inputs.slug }}
+      chat_id: ${{ inputs.chat_id }}
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      INSTALL_TOKEN: ${{ secrets.INSTALL_TOKEN }}
